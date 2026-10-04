@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mann Saathi · मन साथी</title>
+<script>
+/* PASTE YOUR GEMINI KEY BETWEEN THE QUOTES BELOW (keep the quotes and the semicolon) */
+const GEMINI_API_KEY = "YOUR_KEY_HERE";
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1c2150; --ink2:#4a5078; --line:rgba(28,33,80,.16); --lav:#eceafc; --sun:#f4b33d;
+  --dawn-top:#d9d7f7; --dawn-bot:#fde6d4; --day-top:#bfe4f6; --day-bot:#fff3d1;
+  --green:#1f7a4c; --green-bg:#e5f5ec;
+  --amber:#8f5b06; --amber-bg:#fff1d6;
+  --red:#b3261e; --red-bg:#fdeceb;
+  --fs:20px;
+}
+body.large{--fs:24px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#e9e6f8;color:var(--ink);font-family:Mukta,"Noto Sans Devanagari",system-ui,sans-serif;font-size:var(--fs);line-height:1.55;font-weight:500;min-height:100vh}
+body::before,body::after{content:"";position:fixed;inset:0;pointer-events:none}
+body::before{z-index:-2;background:linear-gradient(180deg,var(--dawn-top),var(--dawn-bot))}
+body::after{z-index:-1;background:linear-gradient(180deg,var(--day-top),var(--day-bot));opacity:var(--day,0);transition:opacity 1.2s ease}
+h1,h2,h3,.q,.word b{font-family:"Baloo 2","Noto Sans Devanagari",system-ui,sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding-left:16px;padding-right:16px}
+.top{padding-top:16px}
+.word{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.word b{font-size:1.45em;font-weight:700;line-height:1.1;letter-spacing:.2px}
+.word span{font-size:1.05em;font-weight:600;color:var(--ink2)}
+.top p{margin:2px 0 0;font-size:.82em;color:var(--ink2)}
+.sky{padding-top:4px;margin-bottom:-6px}
+.sky svg{display:block;width:100%;height:auto;overflow:visible}
+#sun{transition:transform 1.1s cubic-bezier(.3,.7,.2,1)}
+main{padding-bottom:120px}
+.panel{background:#fff;background-color:color-mix(in srgb,#f4f2ff calc((1 - var(--day,0)) * 100%),#fffaf0);transition:background-color 1.2s ease;border:1px solid var(--line);border-radius:20px;padding:24px 18px;box-shadow:0 12px 32px rgba(28,33,80,.10)}
+h2{margin:0;font-size:1.45em;font-weight:600;line-height:1.25}
+h3{margin:26px 0 6px;font-size:1.15em;font-weight:600;line-height:1.3}
+.sub{color:var(--ink2);font-size:.88em;margin:6px 0 0}
+.center{text-align:center}
+.count{font-size:.8em;font-weight:600;color:var(--ink2)}
+.stem{font-size:.82em;color:var(--ink2);margin-top:2px}
+.q{font-size:1.35em;font-weight:600;line-height:1.3;margin:8px 0 0}
+.list{display:grid;gap:10px;margin-top:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.row,.tile,.btn{font:inherit;color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.row{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:60px;padding:12px 16px;border-radius:14px;border:1.5px solid var(--line);background:#fff;font-weight:600;text-align:left;transition:background .15s,border-color .15s,transform .1s}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:108px;padding:14px 10px;border-radius:14px;border:1.5px solid var(--line);background:#fff;font-weight:600;text-align:center;transition:background .15s,border-color .15s,transform .1s}
+.tile .ico{font-size:1.8em;line-height:1}
+.row:hover,.tile:hover{border-color:var(--ink);background:#f6f5ff}
+.row:active,.tile:active{transform:scale(.985)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:58px;padding:12px 24px;border-radius:14px;border:0;background:var(--ink);color:#fff;font-weight:700;transition:transform .1s,background .15s}
+.btn:hover{background:#2b3170}
+.btn:active{transform:scale(.985)}
+.btn.full{width:100%;margin-top:20px}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.lvl{display:inline-flex;align-items:flex-end;gap:3px;height:18px;flex:none}
+.lvl i{display:block;width:6px;border-radius:2px;background:rgba(28,33,80,.18)}
+.lvl i:nth-child(1){height:7px}.lvl i:nth-child(2){height:12px}.lvl i:nth-child(3){height:18px}
+.lvl i.on{background:var(--ink)}
+.link{background:none;border:none;font:inherit;font-size:.82em;font-weight:600;color:var(--ink2);text-decoration:underline;padding:12px 10px;cursor:pointer;min-height:44px}
+.nav{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
+.verdict{border-radius:14px;padding:16px 18px;border-left:8px solid}
+.verdict h2{font-size:1.4em}
+.verdict.g{background:var(--green-bg);border-color:var(--green)} .verdict.g h2{color:var(--green)}
+.verdict.a{background:var(--amber-bg);border-color:#d98f12} .verdict.a h2{color:var(--amber)}
+.verdict.r{background:var(--red-bg);border-color:var(--red)} .verdict.r h2{color:var(--red)}
+.meter{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:14px 0 2px;align-items:center}
+.meter i{display:block;height:8px;border-radius:99px;opacity:.28}
+.meter i:nth-child(1){background:#2e9e66}.meter i:nth-child(2){background:#e0a020}.meter i:nth-child(3){background:#d6453a}
+.meter i.on{opacity:1;height:12px}
+.sh{background:var(--red-bg);border-left:6px solid var(--red);padding:14px 16px;border-radius:12px;font-weight:600;margin:14px 0 0}
+.res{display:flex;gap:12px;padding:14px;border-radius:14px;border:1.5px solid var(--line);margin:10px 0;background:#fff}
+.res.first{border-color:var(--red);background:#fff8f7}
+.res .ico{flex:none;width:42px;height:42px;border-radius:12px;background:var(--lav);display:grid;place-items:center;font-size:1.2em}
+.res .body{flex:1;min-width:0}
+.res b{display:block;font-weight:700}
+.res small{display:block;color:var(--ink2);font-size:.82em;line-height:1.4}
+a.call{display:inline-flex;align-items:center;margin:10px 8px 0 0;padding:11px 18px;border-radius:12px;background:var(--ink);color:#fff;font-weight:700;text-decoration:none;min-height:46px}
+a.call.red{background:var(--red)}
+a.call.alt{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+ul.steps{padding-left:1.2em;margin:6px 0}
+ul.steps li{margin:8px 0}
+.skel{height:1em;background:linear-gradient(90deg,#eceafc,#f8f7ff,#eceafc);background-size:200% 100%;animation:sh 1.2s infinite;border-radius:8px;margin:10px 0}
+@keyframes sh{to{background-position:-200% 0}}
+.disc{margin-top:24px;padding:14px 16px;background:var(--lav);border-radius:14px;font-weight:600;text-align:center}
+.note{color:var(--ink2);font-size:.72em;margin-top:14px;text-align:center}
+.sos{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:.8em;color:var(--ink2);font-weight:600}
+.sos a{color:#fff;background:var(--red);font-weight:700;text-decoration:none;padding:8px 14px;border-radius:10px}
+.hide{display:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top wrap">
+  <div class="word"><b>Mann Saathi</b><span>मन साथी</span></div>
+  <p id="tag"></p>
+</header>
+<div class="sky wrap" aria-hidden="true">
+  <svg viewBox="0 0 360 112" preserveAspectRatio="xMidYMax meet">
+    <defs>
+      <radialGradient id="glow"><stop offset="0" stop-color="#f4b33d" stop-opacity=".6"/><stop offset="1" stop-color="#f4b33d" stop-opacity="0"/></radialGradient>
+    </defs>
+    <path d="M24 98 Q180 -46 336 98" fill="none" stroke="rgba(28,33,80,.28)" stroke-width="1.5" stroke-dasharray="2 7" stroke-linecap="round"/>
+    <g id="sun" style="transform:translate(24px,98px)"><circle r="36" fill="url(#glow)"/><circle r="13" fill="#f4b33d"/></g>
+    <path d="M0 98 C60 84 110 100 170 94 S300 82 360 96 V112 H0Z" fill="rgba(28,33,80,.14)"/>
+    <path d="M0 102 H360 V112 H0Z" fill="rgba(28,33,80,.12)"/>
+  </svg>
+</div>
+<main class="wrap"><div id="app" class="panel"></div></main>
+<div class="sos" id="sos"></div>
+
+<script>
+/* ============ CONFIG ============ */
+const GEMINI_MODEL = "gemini-2.5-flash"; // change if your key uses another model
+const LAST_CHECKED = "3 Oct 2026";
+
+/* ============ RESOURCE NOTES (sent to Gemini as-is) ============ */
+const RESOURCE_NOTES = `RESOURCE NOTES (last checked 3 Oct 2026)
+
+EMERGENCY (any self-harm answer, or immediate danger):
+- Tele-MANAS: call 14416 or 1800-891-4416. Free, 24x7, confidential, 20+ languages. ALWAYS list this first.
+- 112: national emergency number, for immediate danger.
+
+GREEN (self-care, check in again in 2 weeks):
+- Tele-MANAS 14416 is still free if things get harder.
+
+AMBER (talking to a counsellor would help):
+- Tele-MANAS 14416: free counselling; can link to a mental health professional, video consult if needed.
+- iCall (TISS): 9152987821, icall@tiss.ac.in. Free counselling by phone/email, Mon-Sat 8 am-9 pm. Not a 24x7 line.
+- District Mental Health Programme (DMHP): ask for the mental health / psychiatry clinic at the nearest district hospital. Offers outpatient psychiatric care and counselling.
+
+RED (speak to someone today):
+- Tele-MANAS 14416 first, then 112 if in immediate danger.
+- NIMHANS helpline 080-46110007 (24x7, psychosocial support).
+- Go to the nearest district hospital or ask the DMHP clinic.
+
+UNDER 18:
+- Childline 1098 (free, 24x7) plus Tele-MANAS 14416.
+- Encourage talking to a trusted adult (parent, teacher, school counsellor).
+
+Never invent numbers or resources not listed here.`;
+
+/* ============ TEXT ============ */
+const T = {
+en:{
+  tag:"A gentle, private check-in. Nothing is saved.",
+  age_q:"Which age group are you in?", age_s:"This helps us fit the wording and tips to you.",
+  ages:{u18:"Under 18", a18:"18 – 25", a26:"26 – 59", a60:"60 and above"},
+  str_q:"What is weighing on you the most right now?", str_s:"Pick the closest one.",
+  strs:{work:"Work", studies:"Studies", family:"Family", health:"Health", loneliness:"Loneliness", other:"Something else"},
+  intro:"Next, 7 short questions, one at a time.", intro_s:"There are no right or wrong answers. Take your time.",
+  begin:"Start",
+  stem:{
+    u18:"In the last 2 weeks, how often has this happened to you?",
+    a18:"Over the last 2 weeks, how often have you been bothered by:",
+    a26:"Over the last 2 weeks, how often have you been bothered by:",
+    a60:"In the last 2 weeks, how often have you felt this way?"
+  },
+  qs:{
+    u18:[
+      "Not enjoying things you usually like: games, friends, hobbies, school",
+      "Feeling sad, low, or like nothing will get better",
+      "Trouble sleeping, or sleeping far too much",
+      "Feeling tired or having no energy, even after resting",
+      "Feeling nervous, anxious or tense (about school, friends or home)",
+      "Not being able to stop worrying",
+      "Thoughts that you would be better off dead, or of hurting yourself"
+    ],
+    a18:[
+      "Little interest or pleasure in things you used to enjoy",
+      "Feeling down, low or hopeless",
+      "Trouble with sleep: falling asleep, waking often, or sleeping too much",
+      "Feeling tired or having little energy",
+      "Feeling nervous, anxious or on edge",
+      "Not being able to stop or control worrying",
+      "Thoughts that you would be better off dead, or of hurting yourself"
+    ],
+    a26:[
+      "Losing interest in things you used to care about: work, family time, hobbies",
+      "Feeling down, empty or hopeless",
+      "Trouble sleeping, or lying awake thinking about responsibilities",
+      "Feeling drained, with little energy to get through the day",
+      "Feeling tense, anxious or on edge",
+      "Worrying a lot and finding it hard to switch off",
+      "Thoughts that you would be better off dead, or of hurting yourself"
+    ],
+    a60:[
+      "Not enjoying things you used to enjoy, or not wanting to meet people",
+      "Feeling sad, lonely or hopeless",
+      "Not sleeping well, or waking up very early",
+      "Feeling very tired or weak, or body aches that do not go away",
+      "Feeling worried or restless",
+      "Not being able to stop worrying",
+      "Thinking you would be better off dead, or of hurting yourself"
+    ]
+  },
+  ans:["Not at all","Some days","Most days","Daily"],
+  qn:(i)=>`Question ${i} of 7`, back:"← Back", restart:"Start over", skip:"Skip",
+  follow_s:"Optional. This only helps tailor your tips.",
+  follow:{
+    work:{q:"What about work is weighing on you most?", o:["Too much work or very long hours","Job security or money worries","Problems with a boss or colleagues","Feeling stuck or burnt out"]},
+    studies:{q:"What about studies is weighing on you most?", o:["Exams or results","Pressure from family or comparing with others","Finding the subjects hard to follow","Worry about my future or career"]},
+    family:{q:"What is hardest at home right now?", o:["Arguments or tension","Looking after someone","Not feeling understood","A loss or a big change"]},
+    health:{q:"What is hardest about your health right now?", o:["Pain or a long illness","Worry about test results","Looking after a sick family member","Changes in my body or in what I can do"]},
+    loneliness:{q:"What does the loneliness feel like?", o:["I have nobody to talk to","I lost someone close to me","My routine or place has changed","I feel alone even around people"]},
+    other:{q:"What would help you most right now?", o:["Someone to listen","Practical advice","To know whether I should seek help","I am not sure"]}
+  },
+  levels:{green:"Green: take care of yourself", amber:"Amber: talking to someone would help", red:"Red: please speak to someone today"},
+  selfharm_banner:"You told us about thoughts of harming yourself or not wanting to live. You are not alone, and help is available right now. Please call Tele-MANAS on 14416 (free, 24x7).",
+  exp_h:"What your answers suggest", steps_h:"Small steps you can try", res_h:"People who can help",
+  adult_h:"Talk to a trusted adult", adult:"Please also tell a trusted adult, such as a parent, teacher or school counsellor.",
+  std_note:"Showing standard guidance (personalised text was not available).",
+  disc:"This is a screening, not a diagnosis. A real professional can help.",
+  checked:()=>`Helpline details last checked ${LAST_CHECKED}. Numbers can change; if one does not connect, try another.`,
+  call:"Call", email:"Email", sosline:"In immediate danger?",
+  fb_exp:{
+    green:"Your answers suggest things may feel manageable right now. It is still okay to ask for support whenever you want it.",
+    amber:"Your answers suggest you may benefit from talking to a professional. Reaching out early can make things easier.",
+    red:"Your answers suggest you may benefit from talking to a professional today. You do not have to handle this alone."
+  },
+  fb_steps:{
+    work:["Take a 5-minute break away from your screen every couple of hours.","Write down the 3 things that must be done today and let the rest wait.","Tell one person you trust how heavy work feels."],
+    studies:["Study in 25-minute blocks with 5-minute breaks.","Protect at least 7 hours of sleep before exams.","Tell a trusted person how stressed you feel. You do not have to carry it alone."],
+    family:["Take a few slow breaths before a difficult conversation.","Find a small time each day that is only for you.","Talk to a friend or relative who is outside the situation."],
+    health:["Keep your doctor visits and routines, and ask them your worries directly.","Try slow breathing: in for 4, out for 6, for a few minutes.","Share how you feel with someone close to you."],
+    loneliness:["Message or call one person today, even briefly.","Step outside for a short walk, or sit somewhere with people around.","When you feel ready, join a group or activity around something you like."],
+    other:["Try slow breathing: in for 4, out for 6, for a few minutes.","Write down what is on your mind. It can ease the load.","Talk to someone you trust about how you feel."]
+  },
+  r:{
+    tm:{n:"Tele-MANAS", d:"Free, 24x7, confidential, 20+ languages. Call anytime.", d2:"Free counselling. Can link you to a mental health professional, with video consult if needed.", d3:"Free and confidential. Call anytime if things get harder."},
+    p112:{n:"112, National Emergency Number", d:"If you are in immediate danger."},
+    nim:{n:"NIMHANS helpline", d:"24x7 psychosocial support."},
+    icall:{n:"iCall (TISS)", d:"Free counselling by phone or email, Mon–Sat, 8 am–9 pm. Not a 24x7 line."},
+    dmhp:{n:"District Mental Health Programme", d:"Ask for the mental health or psychiatry clinic at your nearest district hospital. Offers outpatient psychiatric care and counselling."},
+    hosp:{n:"Nearest district hospital", d:"Go to the nearest district hospital, or ask for the DMHP clinic."},
+    child:{n:"Childline 1098", d:"Free, 24x7 helpline for children."}
+  }
+},
+hi:{
+  tag:"एक सौम्य, निजी चेक-इन। कुछ भी सहेजा नहीं जाता।",
+  age_q:"आप किस आयु वर्ग में हैं?", age_s:"इससे हम शब्द और सुझाव आपके अनुसार चुन पाते हैं।",
+  ages:{u18:"18 से कम", a18:"18 – 25", a26:"26 – 59", a60:"60 और उससे ऊपर"},
+  str_q:"इस समय आपको सबसे ज़्यादा क्या परेशान कर रहा है?", str_s:"सबसे करीबी विकल्प चुनें।",
+  strs:{work:"काम", studies:"पढ़ाई", family:"परिवार", health:"सेहत", loneliness:"अकेलापन", other:"कुछ और"},
+  intro:"आगे 7 छोटे सवाल, एक-एक करके।", intro_s:"कोई जवाब सही या गलत नहीं होता। अपना समय लें।",
+  begin:"शुरू करें",
+  stem:{
+    u18:"पिछले 2 हफ़्तों में, यह कितनी बार हुआ?",
+    a18:"पिछले 2 हफ़्तों में, आप कितनी बार इनसे परेशान रहे:",
+    a26:"पिछले 2 हफ़्तों में, आप कितनी बार इनसे परेशान रहे:",
+    a60:"पिछले 2 हफ़्तों में, आपने कितनी बार ऐसा महसूस किया?"
+  },
+  qs:{
+    u18:[
+      "उन चीज़ों में मन न लगना जो तुम्हें पसंद थीं: खेल, दोस्त, शौक, पढ़ाई",
+      "उदास महसूस करना, या लगना कि कुछ ठीक नहीं होगा",
+      "नींद न आना, या बहुत ज़्यादा सोना",
+      "आराम के बाद भी थकान या बिल्कुल ऊर्जा न होना",
+      "घबराहट या तनाव महसूस करना (स्कूल, दोस्तों या घर को लेकर)",
+      "चिंता को रोक न पाना",
+      "ऐसे विचार कि तुम्हारा न रहना ही बेहतर होगा, या खुद को नुकसान पहुँचाने के विचार"
+    ],
+    a18:[
+      "जिन चीज़ों में पहले मज़ा आता था, उनमें रुचि या खुशी कम होना",
+      "उदास, निराश या हताश महसूस करना",
+      "नींद की परेशानी: देर से नींद आना, बार-बार जागना या बहुत ज़्यादा सोना",
+      "थकान या ऊर्जा की कमी महसूस करना",
+      "घबराहट, बेचैनी या तनाव महसूस करना",
+      "चिंता को रोक या काबू न कर पाना",
+      "ऐसे विचार कि आपका न रहना ही बेहतर होगा, या खुद को नुकसान पहुँचाने के विचार"
+    ],
+    a26:[
+      "काम, परिवार के साथ समय या शौक जैसी चीज़ों में रुचि खो देना जिनकी आप पहले परवाह करते थे",
+      "उदास, खालीपन या हताशा महसूस करना",
+      "नींद न आना, या ज़िम्मेदारियों के बारे में सोचते हुए जागते रहना",
+      "थका हुआ महसूस करना, दिन गुज़ारने की ऊर्जा न होना",
+      "तनाव, घबराहट या बेचैनी महसूस करना",
+      "बहुत चिंता करना और मन को शांत न कर पाना",
+      "ऐसे विचार कि आपका न रहना ही बेहतर होगा, या खुद को नुकसान पहुँचाने के विचार"
+    ],
+    a60:[
+      "जिन चीज़ों में पहले मन लगता था, उनमें मन न लगना, या लोगों से मिलने का मन न करना",
+      "उदास, अकेला या निराश महसूस करना",
+      "ठीक से नींद न आना, या बहुत जल्दी जाग जाना",
+      "बहुत थकान या कमज़ोरी, या ऐसे शरीर दर्द जो ठीक न हों",
+      "चिंता या बेचैनी महसूस करना",
+      "चिंता को रोक न पाना",
+      "ऐसा सोचना कि आपका न रहना ही बेहतर है, या खुद को नुकसान पहुँचाने के विचार"
+    ]
+  },
+  ans:["बिल्कुल नहीं","कुछ दिन","ज़्यादातर दिन","रोज़"],
+  qn:(i)=>`सवाल ${i} / 7`, back:"← वापस", restart:"फिर से शुरू करें", skip:"छोड़ें",
+  follow_s:"वैकल्पिक। इससे सुझाव आपके अनुसार बनते हैं।",
+  follow:{
+    work:{q:"काम की कौन-सी बात आपको सबसे ज़्यादा परेशान कर रही है?", o:["बहुत ज़्यादा काम या लंबे घंटे","नौकरी की सुरक्षा या पैसों की चिंता","बॉस या सहकर्मियों से परेशानी","अटका हुआ या थका-हारा महसूस करना"]},
+    studies:{q:"पढ़ाई की कौन-सी बात आपको सबसे ज़्यादा परेशान कर रही है?", o:["परीक्षा या नतीजे","परिवार का दबाव या दूसरों से तुलना","विषय समझने में कठिनाई","अपने भविष्य या करियर की चिंता"]},
+    family:{q:"अभी घर में सबसे मुश्किल क्या है?", o:["झगड़े या तनाव","किसी की देखभाल करना","समझे न जाने का एहसास","किसी को खोना या बड़ा बदलाव"]},
+    health:{q:"अभी आपकी सेहत में सबसे मुश्किल क्या है?", o:["दर्द या लंबी बीमारी","जाँच के नतीजों की चिंता","बीमार परिजन की देखभाल","शरीर या क्षमता में बदलाव"]},
+    loneliness:{q:"अकेलापन कैसा महसूस होता है?", o:["बात करने के लिए कोई नहीं है","किसी करीबी को खो दिया","दिनचर्या या जगह बदल गई है","लोगों के बीच भी अकेला महसूस होता है"]},
+    other:{q:"अभी आपकी सबसे ज़्यादा मदद किससे होगी?", o:["कोई सुनने वाला","व्यावहारिक सलाह","यह जानना कि मदद लेनी चाहिए या नहीं","पता नहीं"]}
+  },
+  levels:{green:"हरा: अपना ख्याल रखें", amber:"पीला: किसी से बात करना मददगार होगा", red:"लाल: कृपया आज ही किसी से बात करें"},
+  selfharm_banner:"आपने बताया कि आपके मन में खुद को नुकसान पहुँचाने या जीने की इच्छा न होने के विचार आ रहे हैं। आप अकेले नहीं हैं, और मदद अभी उपलब्ध है। कृपया टेली-मानस 14416 (मुफ़्त, 24x7) पर कॉल करें।",
+  exp_h:"आपके जवाब क्या बताते हैं", steps_h:"आज़माने के छोटे कदम", res_h:"जो लोग मदद कर सकते हैं",
+  adult_h:"किसी भरोसेमंद वयस्क से बात करें", adult:"कृपया किसी भरोसेमंद वयस्क को भी बताएँ, जैसे माता-पिता, शिक्षक या स्कूल काउंसलर।",
+  std_note:"सामान्य मार्गदर्शन दिखाया जा रहा है (व्यक्तिगत पाठ उपलब्ध नहीं था)।",
+  disc:"यह केवल एक स्क्रीनिंग है, निदान नहीं। एक असली पेशेवर आपकी मदद कर सकता है।",
+  checked:()=>`हेल्पलाइन जानकारी अंतिम बार ${LAST_CHECKED} को जाँची गई। नंबर बदल सकते हैं; एक न लगे तो दूसरा आज़माएँ।`,
+  call:"कॉल करें", email:"ईमेल", sosline:"तत्काल खतरे में?",
+  fb_exp:{
+    green:"आपके जवाब बताते हैं कि अभी चीज़ें संभालने लायक लग रही हैं। फिर भी, जब चाहें मदद माँगना ठीक है।",
+    amber:"आपके जवाब बताते हैं कि किसी पेशेवर से बात करना आपके लिए मददगार हो सकता है। जल्दी बात करने से चीज़ें आसान हो सकती हैं।",
+    red:"आपके जवाब बताते हैं कि आज ही किसी पेशेवर से बात करना आपके लिए मददगार हो सकता है। आपको यह अकेले नहीं सँभालना है।"
+  },
+  fb_steps:{
+    work:["हर कुछ घंटों में 5 मिनट स्क्रीन से हटकर आराम करें।","आज के 3 सबसे ज़रूरी काम लिखें, बाकी को इंतज़ार करने दें।","किसी भरोसेमंद व्यक्ति से बताएँ कि काम का बोझ कैसा लग रहा है।"],
+    studies:["पढ़ाई को 25 मिनट के हिस्सों में बाँटें और बीच में 5 मिनट आराम करें।","परीक्षा से पहले कम से कम 7 घंटे की नींद लें।","किसी भरोसेमंद व्यक्ति को बताएँ कि आप कितना तनाव महसूस कर रहे हैं।"],
+    family:["मुश्किल बातचीत से पहले कुछ गहरी, धीमी साँसें लें।","रोज़ थोड़ा समय सिर्फ़ अपने लिए निकालें।","किसी दोस्त या रिश्तेदार से बात करें जो इस स्थिति से बाहर हो।"],
+    health:["डॉक्टर के पास जाना और दिनचर्या जारी रखें, और अपनी चिंताएँ उनसे सीधे पूछें।","धीमी साँस लें: 4 गिनती तक अंदर, 6 गिनती तक बाहर, कुछ मिनट तक।","अपने करीबी किसी व्यक्ति से अपनी भावनाएँ साझा करें।"],
+    loneliness:["आज किसी एक व्यक्ति को फ़ोन या संदेश करें, थोड़ी देर के लिए ही सही।","थोड़ी देर टहलने जाएँ या ऐसी जगह बैठें जहाँ लोग हों।","जब मन हो, अपनी पसंद की किसी गतिविधि या समूह से जुड़ें।"],
+    other:["धीमी साँस लें: 4 गिनती तक अंदर, 6 गिनती तक बाहर, कुछ मिनट तक।","जो मन में चल रहा है उसे लिख लें; इससे बोझ हल्का होता है।","किसी भरोसेमंद व्यक्ति से अपनी भावनाओं के बारे में बात करें।"]
+  },
+  r:{
+    tm:{n:"टेली-मानस (Tele-MANAS)", d:"मुफ़्त, 24x7, गोपनीय, 20+ भाषाओं में। कभी भी कॉल करें।", d2:"मुफ़्त काउंसलिंग। ज़रूरत पड़ने पर मानसिक स्वास्थ्य विशेषज्ञ से जोड़ सकते हैं, वीडियो परामर्श भी।", d3:"मुफ़्त और गोपनीय। अगर चीज़ें मुश्किल हों तो कभी भी कॉल करें।"},
+    p112:{n:"112, राष्ट्रीय आपातकालीन नंबर", d:"अगर आप तत्काल खतरे में हैं।"},
+    nim:{n:"निमहांस (NIMHANS) हेल्पलाइन", d:"24x7 मनोसामाजिक सहायता।"},
+    icall:{n:"आईकॉल (iCall, TISS)", d:"फ़ोन या ईमेल पर मुफ़्त काउंसलिंग, सोम–शनि, सुबह 8 से रात 9 बजे। यह 24x7 लाइन नहीं है।"},
+    dmhp:{n:"ज़िला मानसिक स्वास्थ्य कार्यक्रम (DMHP)", d:"अपने नज़दीकी ज़िला अस्पताल में मानसिक स्वास्थ्य या मनोरोग क्लिनिक के बारे में पूछें। यहाँ बाह्य-रोगी मनोरोग देखभाल और काउंसलिंग मिलती है।"},
+    hosp:{n:"नज़दीकी ज़िला अस्पताल", d:"नज़दीकी ज़िला अस्पताल जाएँ, या DMHP क्लिनिक के बारे में पूछें।"},
+    child:{n:"चाइल्डलाइन 1098", d:"बच्चों के लिए मुफ़्त, 24x7 हेल्पलाइन।"}
+  }
+}
+};
+
+/* Life-phase icons for age bands (they echo the rising sun) and icons for stressors */
+const AGE_ICO = {u18:"🌅", a18:"🌤️", a26:"☀️", a60:"🌇"};
+const STR_ICO = {work:"💼", studies:"📚", family:"🏠", health:"🩺", loneliness:"🫂", other:"💭"};
+
+/* ============ STATE & HELPERS ============ */
+const $ = (s)=>document.querySelector(s);
+const app = $("#app");
+const S = {lang:"en", age:null, stressor:null, step:"lang", q:0, answers:[], follow:null, run:0};
+const t = ()=>T[S.lang];
+
+function reset(){ S.age=null; S.stressor=null; S.step="lang"; S.q=0; S.answers=[]; S.follow=null; S.run++; }
+
+function el(tag, attrs, ...kids){
+  const e = document.createElement(tag);
+  const a = attrs || {};
+  for(const k in a){
+    if(k==="class") e.className = a[k];
+    else if(k==="onclick") e.onclick = a[k];
+    else e.setAttribute(k, a[k]);
+  }
+  kids.flat().forEach(c=>{
+    if(c===null || c===undefined || c===false) return;
+    e.append(c.nodeType ? c : document.createTextNode(String(c)));
+  });
+  return e;
+}
+function row(label, fn){ return el("button",{class:"row",type:"button",onclick:fn}, el("span",{},label)); }
+function ansRow(label, v, fn){
+  const bars = el("span",{class:"lvl","aria-hidden":"true"}, [1,2,3].map(n=>el("i",{class:n<=v?"on":""})));
+  return el("button",{class:"row",type:"button",onclick:fn}, el("span",{},label), bars);
+}
+function tile(icon, label, fn){ return el("button",{class:"tile",type:"button",onclick:fn}, el("span",{class:"ico","aria-hidden":"true"},icon), el("span",{},label)); }
+function linkBtn(label, fn){ return el("button",{class:"link",type:"button",onclick:fn},label); }
+function restartLink(){ return el("div",{class:"nav"}, linkBtn(t().restart,()=>{reset();render();})); }
+
+/* ---- the sun: progress through the check-in ---- */
+function progress(){
+  switch(S.step){
+    case "lang": return 0;
+    case "age": return .08;
+    case "stressor": return .16;
+    case "intro": return .24;
+    case "quiz": return .24 + (S.q/7)*.62;
+    case "follow": return .9;
+    default: return 1;
+  }
+}
+function setSky(){
+  const p = progress();
+  const u = p*0.5;                                        // first half of the arc: horizon to the top
+  const x = (1-u)*(1-u)*24 + 2*(1-u)*u*180 + u*u*336;
+  const y = (1-u)*(1-u)*98 + 2*(1-u)*u*(-46) + u*u*98;
+  $("#sun").style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
+  document.documentElement.style.setProperty("--day", p.toFixed(2));
+}
+
+function renderSOS(){
+  const x=$("#sos"); x.replaceChildren();
+  x.append(el("span",{},t().sosline),
+    el("a",{href:"tel:112"},"112"),
+    el("a",{href:"tel:14416"},"Tele-MANAS 14416"));
+}
+
+function render(){
+  document.documentElement.lang = S.lang==="hi" ? "hi" : "en";
+  document.body.classList.toggle("large", S.age==="a60");
+  $("#tag").textContent = t().tag;
+  setSky();
+  renderSOS();
+  app.replaceChildren();
+  window.scrollTo({top:0});
+  ({lang:vLang, age:vAge, stressor:vStr, intro:vIntro, quiz:vQuiz, follow:vFollow, result:vResult})[S.step]();
+}
+
+/* ============ SCREENS ============ */
+function vLang(){
+  app.append(el("div",{class:"center"},
+    el("h2",{},"Welcome"),
+    el("h2",{},"स्वागत है"),
+    el("p",{class:"sub"},"A few gentle questions to help you see whether talking to someone could help. About 2 minutes. Nothing is saved."),
+    el("p",{class:"sub"},"कुछ सौम्य सवाल, ताकि आप जान सकें कि किसी से बात करना मददगार हो सकता है या नहीं। लगभग 2 मिनट। कुछ भी सहेजा नहीं जाता।")),
+    el("div",{class:"grid2"},
+      tile("अ","हिन्दी",()=>{S.lang="hi";S.step="age";render();}),
+      tile("A","English",()=>{S.lang="en";S.step="age";render();})));
+}
+function vAge(){
+  app.append(el("h2",{},t().age_q), el("p",{class:"sub"},t().age_s));
+  const g=el("div",{class:"grid2"});
+  Object.entries(t().ages).forEach(([k,v])=>g.append(tile(AGE_ICO[k],v,()=>{S.age=k;S.step="stressor";render();})));
+  app.append(g, restartLink());
+}
+function vStr(){
+  app.append(el("h2",{},t().str_q), el("p",{class:"sub"},t().str_s));
+  const g=el("div",{class:"grid2"});
+  Object.entries(t().strs).forEach(([k,v])=>g.append(tile(STR_ICO[k],v,()=>{S.stressor=k;S.step="intro";render();})));
+  app.append(g, restartLink());
+}
+function vIntro(){
+  app.append(el("div",{class:"center"}, el("h2",{},t().intro), el("p",{class:"sub"},t().intro_s)),
+    el("button",{class:"btn full",type:"button",onclick:()=>{S.step="quiz";S.q=0;S.answers=[];render();}},t().begin));
+}
+function vQuiz(){
+  const i=S.q, X=t();
+  app.append(
+    el("div",{class:"count"}, X.qn(i+1)),
+    el("div",{class:"stem"}, X.stem[S.age]),
+    el("div",{class:"q"}, X.qs[S.age][i]));
+  const list=el("div",{class:"list"});
+  X.ans.forEach((a,v)=>list.append(ansRow(a,v,()=>{
+    S.answers[i]=v;
+    if(i<6){ S.q++; render(); }
+    else { S.step = S.answers[6]>0 ? "result" : "follow"; render(); }
+  })));
+  app.append(list);
+  const nav=el("div",{class:"nav"});
+  if(i>0) nav.append(linkBtn(X.back,()=>{S.q--;render();}));
+  nav.append(linkBtn(X.restart,()=>{reset();render();}));
+  app.append(nav);
+}
+function vFollow(){
+  const X=t(), f=X.follow[S.stressor];
+  app.append(el("h2",{},f.q), el("p",{class:"sub"},X.follow_s));
+  const list=el("div",{class:"list"});
+  f.o.forEach((v,i)=>list.append(row(v,()=>{S.follow=i;S.step="result";render();})));
+  app.append(list);
+  const nav=el("div",{class:"nav"});
+  nav.append(linkBtn(X.back,()=>{S.step="quiz";S.q=6;render();}));
+  nav.append(linkBtn(X.skip,()=>{S.follow=null;S.step="result";render();}));
+  app.append(nav);
+}
+
+/* ============ SCORING (same for every age band) ============ */
+function evaluate(){
+  const score = S.answers.reduce((a,b)=>a+(b||0),0);   // 0 - 21
+  const selfHarm = S.answers[6]>0;                      // any answer other than "Not at all"
+  let level="green";
+  if(selfHarm || score>=13) level="red";
+  else if(score>=7) level="amber";
+  return {score, selfHarm, level};
+}
+
+/* ============ RESOURCES (rendered locally from the notes) ============ */
+function resList(level, selfHarm, under18){
+  const R=t().r, L=[];
+  const tm=(desc)=>({id:"tm",ico:"📞",name:R.tm.n,desc,calls:[["14416","14416"],["1800-891-4416","18008914416"]],first:true});
+  if(selfHarm || level==="red"){
+    L.push(tm(R.tm.d));
+    L.push({id:"112",ico:"🚨",name:R.p112.n,desc:R.p112.d,calls:[["112","112"]]});
+    L.push({id:"nim",ico:"🧠",name:R.nim.n,desc:R.nim.d,calls:[["080-46110007","08046110007"]]});
+    L.push({id:"hosp",ico:"🏥",name:R.hosp.n,desc:R.hosp.d});
+  } else if(level==="amber"){
+    L.push(tm(R.tm.d2));
+    L.push({id:"icall",ico:"💬",name:R.icall.n,desc:R.icall.d,calls:[["9152987821","9152987821"]],email:"icall@tiss.ac.in"});
+    L.push({id:"dmhp",ico:"🏥",name:R.dmhp.n,desc:R.dmhp.d});
+  } else {
+    L.push(tm(R.tm.d3));
+  }
+  if(under18) L.push({id:"child",ico:"🧒",name:R.child.n,desc:R.child.d,calls:[["1098","1098"]]});
+  return L;
+}
+function resCard(r){
+  const X=t();
+  const body=el("div",{class:"body"}, el("b",{},r.name), el("small",{},r.desc));
+  (r.calls||[]).forEach(([label,num],idx)=>{
+    body.append(el("a",{class:"call"+(r.first&&idx===0?" red":(idx>0?" alt":"")),href:"tel:"+num},X.call+" "+label));
+  });
+  if(r.email) body.append(el("a",{class:"call alt",href:"mailto:"+r.email},X.email+" "+r.email));
+  return el("div",{class:"res"+(r.first?" first":"")}, el("span",{class:"ico","aria-hidden":"true"},r.ico||"•"), body);
+}
+
+/* ============ GEMINI ============ */
+const BAD = /(you (have|are suffering from|suffer from) (depression|anxiety|a disorder|bipolar)|\b(take|taking) (a |some |the )?(medicine|medication|tablets?|pills?)|antidepressant|\b\d+\s?mg\b|(आपको|तुम्हें) (डिप्रेशन|अवसाद|एंग्जाइटी) है|दवा लें|दवाई लें|गोली)/i;
+function numbersOK(txt){
+  const ok=new Set(["112","14416","1098","18008914416","08046110007","9152987821"]);
+  const long = txt.match(/\+?\d[\d\s-]{5,}\d/g) || [];
+  for(const m of long){ if(!ok.has(m.replace(/\D/g,""))) return false; }
+  const short = txt.replace(/\+?\d[\d\s-]{5,}\d/g," ").match(/\b\d{3,5}\b/g) || [];
+  for(const d of short){ if(!ok.has(d)) return false; }
+  return true;
+}
+
+async function askGemini(level, score, selfHarm){
+  if(!GEMINI_API_KEY || GEMINI_API_KEY==="YOUR_KEY_HERE") throw new Error("no key");
+  const E=T.en;
+  const ageL=E.ages[S.age];
+  const strL=E.strs[S.stressor||"other"];
+  const fol=(S.follow!==null && S.stressor) ? E.follow[S.stressor].o[S.follow] : "none given";
+  const ageRule = S.age==="u18" ? "Speak kindly to a young person and suggest talking to a trusted adult."
+                : S.age==="a60" ? "Use very simple, short sentences."
+                : "Use plain, warm language.";
+  const prompt = `You are the gentle writing voice of "Mann Saathi", a mental health screening guide in India.
+Write in ${S.lang==="hi" ? "simple Hindi (Devanagari script)" : "simple English"}.
+Person: age band ${ageL}; main thing weighing on them: ${strL}; detail they chose: ${fol}.
+Screening result: ${level.toUpperCase()} (score ${score} of 21)${selfHarm ? "; they indicated thoughts of self-harm" : ""}.
+Return ONLY JSON: {"explanation":"...","steps":["...","...","..."]}
+Rules:
+- explanation: exactly 3 short, warm sentences. For amber or red, say that their answers suggest they may benefit from talking to a professional. Never say the person has any condition. Never diagnose.
+- steps: exactly 3 small, concrete self-care steps that fit the age band and what is weighing on them. No medication, no supplements, no dosages.
+- If they indicated self-harm thoughts: be gentle, say they are not alone, and mention Tele-MANAS 14416 (free, 24x7) or 112 if in immediate danger. Give no method details.
+- ${ageRule}
+- Use only phone numbers from the RESOURCE NOTES below. Never invent numbers or organisations.
+
+${RESOURCE_NOTES}`;
+  const ctl=new AbortController();
+  const to=setTimeout(()=>ctl.abort(),20000);
+  try{
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`,{
+      method:"POST", headers:{"Content-Type":"application/json"}, signal:ctl.signal,
+      body:JSON.stringify({contents:[{role:"user",parts:[{text:prompt}]}],
+        generationConfig:{temperature:0.4,responseMimeType:"application/json",thinkingConfig:{thinkingBudget:0}}})
+    });
+    if(!r.ok) throw new Error("http "+r.status);
+    const d = await r.json();
+    let txt = d.candidates[0].content.parts.map(p=>p.text||"").join("");
+    txt = txt.replace(/^```json|```$/g,"").trim();
+    const j = JSON.parse(txt);
+    const explanation = String(j.explanation||"").trim();
+    const steps = (Array.isArray(j.steps)?j.steps:[]).map(s=>String(s).trim()).filter(Boolean).slice(0,3);
+    if(!explanation || steps.length<2) throw new Error("bad shape");
+    const all = explanation+" "+steps.join(" ");
+    if(BAD.test(all) || !numbersOK(all)) throw new Error("filtered");
+    return {explanation, steps};
+  } finally { clearTimeout(to); }
+}
+
+/* ============ RESULT ============ */
+function vResult(){
+  const X=t();
+  const {score,selfHarm,level}=evaluate();
+  const under18 = S.age==="u18";
+  const runId = S.run;
+  const red = selfHarm || level==="red";
+  const shown = red ? "red" : level;
+
+  const verdict = el("div",{class:"verdict "+shown[0]}, el("h2",{},X.levels[shown]),
+    el("div",{class:"meter","aria-hidden":"true"},
+      ["green","amber","red"].map(n=>el("i",{class:n===shown?"on":""}))));
+  const loadingNode = el("div",{}, el("div",{class:"skel"}), el("div",{class:"skel"}), el("div",{class:"skel"}));
+  const expBox = el("div",{}, el("h3",{},X.exp_h), loadingNode);
+  const stepsUl = el("ul",{class:"steps"});
+  const stepsBox = el("div",{class:"hide"}, el("h3",{},X.steps_h), stepsUl);
+  const resBox = el("div",{}, el("h3",{},X.res_h), ...resList(level,selfHarm,under18).map(resCard));
+  const adultBox = under18 ? el("div",{}, el("h3",{},X.adult_h), el("p",{},X.adult)) : null;
+
+  app.append(verdict);
+  if(selfHarm) app.append(el("p",{class:"sh"},X.selfharm_banner));
+  if(red) app.append(resBox, expBox, stepsBox, adultBox);
+  else app.append(expBox, stepsBox, resBox, adultBox);
+  app.append(el("div",{class:"disc"},X.disc), el("p",{class:"note"},X.checked()), restartLink());
+
+  const fb = ()=>({explanation:X.fb_exp[shown], steps:X.fb_steps[S.stressor||"other"]});
+  const show=(r,std)=>{
+    if(S.run!==runId || S.step!=="result") return;
+    loadingNode.replaceWith(el("p",{},r.explanation));
+    r.steps.forEach(s=>stepsUl.append(el("li",{},s)));
+    stepsBox.classList.remove("hide");
+    if(std) expBox.append(el("p",{class:"note"},X.std_note));
+  };
+  askGemini(shown, score, selfHarm).then(r=>show(r,false)).catch(()=>show(fb(),true));
+}
+
+render();
+</script>
+</body>
+</html>
